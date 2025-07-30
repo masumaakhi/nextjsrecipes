@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import toast from "react-hot-toast";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -42,12 +43,13 @@ const SignIn = () => {
         if (result.error) {
             setError(result.error);
         } else {
-            setSuccess("Sign-in successful!");
+            toast.success("Sign-in successful!");
             router.push("/");
         }
         setLoading(false);
     } catch (error) {
         setError(error.message);
+        toast.error(error.message);
         setLoading(false);
     }
     console.log("Sign-in data:", formData);

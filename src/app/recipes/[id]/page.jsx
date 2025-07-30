@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const getRecipe = async (id) => {
-  const res = await fetch(`http://localhost:3000/api/recipes/${id}`, {
+  const res = await fetch(`/api/recipes/${id}`, {
     cache: "no-store",
   });
   const data = await res.json();

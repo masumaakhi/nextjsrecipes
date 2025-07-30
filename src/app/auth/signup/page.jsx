@@ -320,6 +320,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -391,9 +392,10 @@ const Signup = () => {
 
         // ✅ Redirect to homepage (session now updates)
         router.push("/");
+toast.success("Registration successful!");
       }
     } catch (err) {
-      setError("Failed to register. Try again later.");
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }

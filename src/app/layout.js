@@ -45,8 +45,9 @@ export default function RootLayout({ children }) {
           {/* Wrap everything with Provider */}
           <Providers>
             <Nav />
-            <Toaster />
+
             {children}
+             <Toaster position="top-right" reverseOrder={false} />
             <Footer />
           </Providers>
         </div>

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 const UpdateRecipe = () => {
   const router = useRouter();
@@ -106,13 +107,13 @@ const UpdateRecipe = () => {
 
       if (res.ok && result.success) {
         alert("Recipe updated successfully!");
-        router.push("/dashboard/admin/recipes");
+        router.push("/.netlify/functions/dashboard/admin/recipes");
       } else {
-        alert("Failed to update recipe.");
+        toast.error(result.message);
       }
     } catch (err) {
       console.error(err);
-      alert("An error occurred while updating the recipe.");
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }

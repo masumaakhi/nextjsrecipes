@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import toast from "react-hot-toast";
 
 const PendingRecipes = () => {
   const [recipes, setRecipes] = useState([]);
@@ -11,6 +12,7 @@ const PendingRecipes = () => {
   const data = await res.json();
   if (data.success) {
     setRecipes(data.recipes);
+    toast.success("Recipes fetched successfully");
   }
 };
 
@@ -33,10 +35,10 @@ const PendingRecipes = () => {
       if (data.success) {
         setRecipes((prev) => prev.filter((r) => r._id !== id)); // remove from list
       } else {
-        alert("Failed to update recipe");
+        toast.error(data.message);
       }
     } catch (err) {
-      alert("Error occurred");
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }

@@ -178,6 +178,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 const AddRecipes = () => {
   const router = useRouter();
@@ -268,7 +269,7 @@ const AddRecipes = () => {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        alert("Recipe saved successfully!");
+        toast.success("Recipe saved successfully!");
 
         if (user?.role === "admin") {
           // Admin: redirect to live recipes page

@@ -135,6 +135,7 @@ import { HiDotsVertical } from "react-icons/hi";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function RecipesTable() {
   const [recipes, setRecipes] = useState([]);
@@ -179,10 +180,10 @@ export default function RecipesTable() {
         alert("Deleted!");
         setRecipes((prev) => prev.filter((recipe) => recipe._id !== id)); // ✅ Remove from UI
       } else {
-        alert(result.message || "Delete failed");
+        toast.error(result.message);
       }
     } catch (err) {
-      alert("Error deleting");
+      toast.error("Something went wrong");
     }
   };
 
