@@ -106,6 +106,14 @@ export const authOptions = {
   ],
 
   callbacks: {
+      async redirect({ url, baseUrl }) {
+    return baseUrl; // ✅ এটা থাকলে local hole local, deploy hole deploy e redirect korbe
+  },
+  async session({ session, token, user }) {
+    const dbUser = await User.findOne({ email: session.user.email });
+    session.user._id = dbUser._id;
+    return session;
+  },
     async signIn({ user, account }) {
       await connectDb();
 

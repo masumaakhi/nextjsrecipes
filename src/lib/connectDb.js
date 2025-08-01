@@ -1,3 +1,5 @@
+// src/lib/connectDb.js
+
 import mongoose from "mongoose";
 
 mongoose.set("debug", true); // optionally move before

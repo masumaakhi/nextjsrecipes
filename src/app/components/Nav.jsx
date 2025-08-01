@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X, UserCircle2 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
+// import navigation from "next/navigation";
 
 const Nav = () => {
   const { data } = useSession();
@@ -12,7 +15,16 @@ const Nav = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const mobileDropdownRef = useRef(null); // NEW for mobile
+  const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      router.push(`/recipes?search=${encodeURIComponent(searchTerm)}`);
+      setSearchTerm("");
+    }
+  };
   const navItems = [
     { label: "Home", href: "/" },
     { label: "Recipes", href: "/recipes" },
@@ -56,7 +68,7 @@ const Nav = () => {
           { label: "Admin Dashboard", href: "/dashboard/admin/admindashboard" },
           { label: "Manage Users", href: "/dashboard/admin/users" },
           { label: "Manage Recipes", href: "/dashboard/admin/recipes" },
-          { label: "Pending Recipes",href: "/dashboard/admin/pendingrecipes",},
+          { label: "Pending Recipes", href: "/dashboard/admin/pendingrecipes" },
           { label: "Manage Blogs", href: "/dashboard/admin/blogs" },
           { label: "Pending Blogs", href: "/dashboard/admin/pendingsblogs" },
           { label: "Manage Reviews", href: "/dashboard/admin/reviews" },
@@ -89,6 +101,25 @@ const Nav = () => {
         <Link href="/">
           <Image src="/logo513.svg" alt="Logo" width={60} height={60} />
         </Link>
+
+        {/* 🔍 Search Field */}
+        <form onSubmit={handleSearch} className="flex  items-center gap-2">
+          <div className="relative w-full max-w-md">
+            <input
+              type="text"
+              placeholder="Search recipes..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-4 pr-12 py-2 border border-slate-600 text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="submit"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-black p-2 rounded-md hover:bg-gray-200 transition"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+          </div>
+        </form>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:block">
@@ -140,7 +171,6 @@ const Nav = () => {
                       <li>
                         <button
                           onClick={() => signOut({ callbackUrl: "/" })}
-                        
                           className="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"
                         >
                           Logout

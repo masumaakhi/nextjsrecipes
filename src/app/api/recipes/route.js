@@ -6,29 +6,7 @@ import Recipe from '@/models/recipe';
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-// export async function POST(req) {
-//   await connectDb();
-//   const session = await getServerSession(authOptions);
-//   const userId = session?.user?._id;
-//   console.log("SESSION:", session); // <-- এখানে লিখুন
 
-//   if (!userId) {
-//     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-//   }
-
-//   try {
-//     const data = await req.json();
-
-//     const recipe = await Recipe.create({
-//       ...data,
-//       createdBy: userId, // createdBy ফিল্ডে userId পাঠানো হচ্ছে
-//     });
-
-//     return NextResponse.json({ success: true, recipe });
-//   } catch (error) {
-//     return NextResponse.json({ success: false, message: error.message }, { status: 400 });
-//   }
-// }
 
 export async function POST(req) {
   await connectDb();
@@ -81,11 +59,16 @@ export async function PUT(req) {
 }
 
 
-// export async function GET() {
+
+// export async function GET(req) {
 //   await connectDb();
 
+//   const url = new URL(req.url);
+//   const status = url.searchParams.get("status"); // ✅ read ?status=pending
+
 //   try {
-//     const recipes = await Recipe.find({ status: 'pending' }).populate("createdBy", "name email");
+//     const filter = status ? { status } : {};
+//     const recipes = await Recipe.find(filter).populate("createdBy", "name");
 //     return NextResponse.json({ success: true, recipes });
 //   } catch (error) {
 //     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -96,10 +79,34 @@ export async function GET(req) {
   await connectDb();
 
   const url = new URL(req.url);
-  const status = url.searchParams.get("status"); // ✅ read ?status=pending
+  const params = url.searchParams;
+
+  const filter = { status: "approved" };
+
+  // 🔍 Search keyword from ?search=
+  const search = params.get("search");
+  if (search) {
+    filter.$or = [
+      { title: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } },
+      { ingredients: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  // 🍽️ Other filters
+  if (params.get("cuisine")) filter["category.cuisine"] = params.get("cuisine");
+  if (params.get("dietType")) filter["category.dietType"] = params.get("dietType");
+  if (params.get("foodType")) filter["category.foodType"] = params.get("foodType");
+
+  const minCookTime = Number(params.get("minCookTime") || 0);
+  const maxCookTime = Number(params.get("maxCookTime") || 120);
+  const minServings = Number(params.get("minServings") || 1);
+  const maxServings = Number(params.get("maxServings") || 10);
+
+  filter.cookTime = { $gte: minCookTime, $lte: maxCookTime };
+  filter.servings = { $gte: minServings, $lte: maxServings };
 
   try {
-    const filter = status ? { status } : {};
     const recipes = await Recipe.find(filter).populate("createdBy", "name");
     return NextResponse.json({ success: true, recipes });
   } catch (error) {
@@ -130,3 +137,30 @@ if (!user || user.role !== "admin") {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }
+
+// export async function POST(req) {
+//   await connectDb();
+
+//   const session = await getServerSession(authOptions);
+//   const userId = session?.user?._id;
+//   const userRole = session?.user?.role;
+
+//   if (!userId) {
+//     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+//   }
+
+//   try {
+//     const data = await req.json();
+
+//     const recipe = await Recipe.create({
+//       ...data,
+//       createdBy: userId,
+//       status: userRole === "admin" ? "approved" : "pending",
+//     });
+
+//     return NextResponse.json({ success: true, recipe });
+//   } catch (error) {
+//     return NextResponse.json({ success: false, message: error.message }, { status: 400 });
+//   }
+// }
+

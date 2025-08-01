@@ -70,7 +70,31 @@ const recipeSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+
+    comments: [
+  {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    text: String,
+    createdAt: { type: Date, default: Date.now },
+     replies: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        text: String,
+        createdAt: { type: Date, default: Date.now },
+      },
+    ],
+  }
+],
+likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+ratings: [
+  {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    value: { type: Number, min: 1, max: 5 },
   },
+],
+  }, 
+
   {
     timestamps: true,
   }

@@ -107,7 +107,7 @@ const UpdateRecipe = () => {
 
       if (res.ok && result.success) {
         alert("Recipe updated successfully!");
-        router.push("/.netlify/functions/dashboard/admin/recipes");
+        router.push("/dashboard/admin/recipes");
       } else {
         toast.error(result.message);
       }
