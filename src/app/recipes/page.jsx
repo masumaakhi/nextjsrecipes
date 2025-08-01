@@ -1,20 +1,30 @@
 // // //src/app/recipes/page.jsx
-
 "use client";
-import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SlidersHorizontal, X } from "lucide-react";
 import Image from "next/image";
 import { highlightMatch } from "@/utils/highlightMatch";
 import RecipeFilterSidebar from "../components/RecipeFilterSidebar";
+import { useSearchParams } from "next/navigation";
+
+// 🔧 Wrapper component for useSearchParams inside Suspense
+const SearchWrapper = ({ onSearchChange }) => {
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search");
+
+  useEffect(() => {
+    onSearchChange(search);
+  }, [search]);
+
+  return null;
+};
 
 const Recipes = () => {
   const router = useRouter();
   const [recipes, setRecipes] = useState([]);
-  const searchParams = useSearchParams();
-  const search = searchParams.get("search");
-
+  const [search, setSearch] = useState(null);
   const [filters, setFilters] = useState({
     cuisine: "",
     dietType: "",
@@ -39,7 +49,6 @@ const Recipes = () => {
     fetchRecipes();
   }, [filters, search]);
 
-  // Optional: initial load with approved recipes only
   useEffect(() => {
     const fetchRecipes = async () => {
       const res = await fetch("/api/recipes?status=approved");
@@ -53,6 +62,11 @@ const Recipes = () => {
 
   return (
     <div className="px-6 mt-[6rem] mb-2">
+      {/* Suspense for search */}
+      <Suspense fallback={null}>
+        <SearchWrapper onSearchChange={setSearch} />
+      </Suspense>
+
       {/* 🧾 Filter Button ABOVE the grid */}
       <div className="flex justify-start mb-4">
         <nav className="text-slate-900 text-md mb-6 flex space-x-2">
@@ -69,14 +83,10 @@ const Recipes = () => {
 
           {search && (
             <div className="flex items-center gap-2 bg-slate-200 px-3 pt-[1px] pb-[1px] rounded-full w-fit text-md">
-              <span className="text-black">
-                 {search}
-              </span>
+              <span className="text-black">{search}</span>
               <button
                 onClick={() => {
-                  const newParams = new URLSearchParams(
-                    searchParams.toString()
-                  );
+                  const newParams = new URLSearchParams(window.location.search);
                   newParams.delete("search");
                   router.push(`/recipes?${newParams.toString()}`);
                 }}
@@ -131,24 +141,15 @@ const Recipes = () => {
             </Link>
 
             <div className="p-4">
-              {/* ✅ Highlighted Title */}
               <h3 className="text-xl font-semibold">
                 {highlightMatch(recipe.title, search)}
               </h3>
-
-              {/* ✅ Author Name */}
               <p className="text-sm text-gray-600">
                 By {recipe.createdBy?.name || "Unknown"}
               </p>
-
-              {/* ✅ Highlighted Description */}
-              {/* <p className="text-gray-700">
-                {highlightMatch(recipe.description?.substring(0, 100), search)}
-                ...
-              </p> */}
               <p className="text-gray-700">
-                {highlightMatch(recipe.description, search)} 
-                </p>
+                {highlightMatch(recipe.description, search)}
+              </p>
             </div>
           </div>
         ))}
