@@ -110,7 +110,7 @@ const Nav = () => {
               placeholder="Search recipes..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-4 pr-12 py-2 border border-slate-600 text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-4 pr-0 sm:pr-10 md:pr-12 lg:pr-12 py-2 border border-slate-600 text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
               type="submit"
@@ -206,7 +206,7 @@ const Nav = () => {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <nav className="md:hidden flex flex-col text-[1.2rem] bg-opacity-70 shadow-lg backdrop-blur-md px-4 pb-4 pt-2">
+        <nav className="md:hidden flex flex-col text-slate-950 text-[1.2rem] bg-opacity-70 shadow-lg backdrop-blur-md px-4 pb-4 pt-2">
           <ul className="space-y-4 text-lg">
             {navItems.map((item) => (
               <li key={item.label}>
@@ -223,10 +223,10 @@ const Nav = () => {
             {data?.user ? (
               <>
                 <li
-                  className="flex items-center justify-between cursor-pointer"
+                  className="flex items-center text-slate-950 justify-between cursor-pointer"
                   onClick={() => setMobileMenuDropdown(!mobileMenuDropdown)}
                 >
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center text-slate-800 hover:text-orange-500 space-x-2">
                     {data.user.image ? (
                       <Image
                         src={data.user.image}
@@ -254,7 +254,7 @@ const Nav = () => {
                             setMenuOpen(false);
                             setMobileMenuDropdown(false);
                           }}
-                          className="hover:text-orange-500 block"
+                          className="hover:text-orange-500 text-slate-900 block"
                         >
                           {item.label}
                         </Link>
@@ -281,7 +281,7 @@ const Nav = () => {
                   <Link
                     href={item.href}
                     onClick={() => setMenuOpen(false)}
-                    className="hover:text-orange-500"
+                    className="hover:text-orange-500 text-slate-900 block"
                   >
                     {item.label}
                   </Link>
