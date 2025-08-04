@@ -46,16 +46,16 @@ const PendingRecipes = () => {
 
   return (
     <div className="p-6 mt-24">
-      <h1 className="text-3xl font-bold mb-6">Pending Recipes</h1>
+      <h1 className="text-3xl text-slate-950 font-bold mb-6">Pending Recipes</h1>
 
       {recipes.length === 0 ? (
-        <p className="text-gray-600">No pending recipes.</p>
+        <p className="text-slate-700">No pending recipes.</p>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {recipes.map((recipe) => (
             <div
               key={recipe._id}
-              className="bg-white border rounded-lg overflow-hidden shadow-md"
+              className="bg-white border text-slate-900 rounded-lg overflow-hidden shadow-md"
             >
               <div className="relative h-48 w-full">
                 <Image
@@ -66,15 +66,15 @@ const PendingRecipes = () => {
                 />
               </div>
               <div className="p-4 space-y-2">
-                <h2 className="text-xl font-semibold">{recipe.title}</h2>
-                <p className="text-sm text-gray-500">
+                <h2 className="text-xl text-slate-900 font-semibold">{recipe.title}</h2>
+                <p className="text-sm text-slate-800">
                   Status:{" "}
                   <span className="capitalize font-medium">{recipe.status}</span>
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-slate-800">
                   Created by: {recipe.createdBy?.name || "Unknown"}
                 </p>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-slate-800">
                   <p>
                     Cuisine:{" "}
                     {recipe.category?.cuisine?.join(", ") || "Not specified"}

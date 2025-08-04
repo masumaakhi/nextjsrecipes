@@ -106,7 +106,7 @@ const UpdateRecipe = () => {
       const result = await res.json();
 
       if (res.ok && result.success) {
-        alert("Recipe updated successfully!");
+        toast.success("Recipe updated successfully!");
         router.push("/dashboard/admin/recipes");
       } else {
         toast.error(result.message);
@@ -139,18 +139,20 @@ const UpdateRecipe = () => {
     carbs
   } = recipeData;
 
+   const inputStyle = "w-full border px-4 py-2 mb-2 rounded-md  border-slate-600 text-slate-900  focus:outline-none focus:ring-2 focus:ring-blue-500"
+
   return (
     <div className="max-w-2xl mt-[7rem] mx-auto bg-orange-50 p-6 rounded-lg shadow-lg my-16">
       <div className="flex justify-between items-center mb-6">
-        <nav className="text-gray-400 text-sm mb-6 flex space-x-2">
-          <Link href="/" className="hover:text-white">Home</Link>
+        <nav className="text-slate-900 text-sm mb-6 flex space-x-2">
+          <Link href="/" className="hover:text-slate-600">Home</Link>
           <span>{">"}</span>
-          <Link href="/dashboard/admin/recipes" className="hover:text-white">Recipes</Link>
+          <Link href="/dashboard/admin/recipes" className="hover:text-slate-600">Recipes</Link>
           <span>{">"}</span>
           <span className="font-semibold">{title}</span>
         </nav>
 
-        <h2 className="text-2xl font-bold">Update Recipe</h2>
+        <h2 className="text-2xl text-slate-950 font-bold">Update Recipe</h2>
         <button
           onClick={updateRecipe}
           disabled={loading}
@@ -164,54 +166,54 @@ const UpdateRecipe = () => {
 
       <form className="space-y-6" onSubmit={updateRecipe}>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Title</label>
+          <label className="block font-medium mb-2 text-slate-900">Title</label>
           <input
             type="text"
             value={title || ""}
             onChange={(e) => handleChange("title", e.target.value)}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            className={inputStyle}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Image</label>
+          <label className="block font-medium mb-2 text-slate-900">Image</label>
           <input
             type="file"
             accept="image/*"
             onChange={(e) => setImageFile(e.target.files[0])}
-            className="mt-1 block w-full"
+            className={inputStyle}
           />
         </div>
 
         <div>
-          <label className="block font-medium mb-2">Description</label>
+          <label className="block font-medium mb-2 text-slate-900">Description</label>
           <textarea
             maxLength={500}
             value={description || ""}
             onChange={(e) => handleChange("description", e.target.value)}
-            className="w-full border px-4 py-2 rounded-md"
+            className={inputStyle}
             required
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block font-medium mb-2">Cuisine</label>
+            <label className="block font-medium mb-2 text-slate-900">Cuisine</label>
             <input
               type="text"
               value={cuisine}
               onChange={(e) => handleChange("cuisine", e.target.value)}
-              className="w-full border px-4 py-2 rounded-md"
+              className={inputStyle}
               placeholder="e.g., Indian"
             />
           </div>
 
           <div>
-            <label className="block font-medium mb-2">Meal Type</label>
+            <label className="block font-medium mb-2 text-slate-900">Meal Type</label>
             <select
               value={mealType}
               onChange={(e) => handleChange("mealType", e.target.value)}
-              className="w-full border px-4 py-2 rounded-md"
+              className={inputStyle}
             >
               <option value="">-- Select Meal Type --</option>
               <option value="Breakfast">Breakfast</option>
@@ -226,30 +228,30 @@ const UpdateRecipe = () => {
           </div>
 
           <div>
-            <label className="block font-medium mb-2">Diet Type</label>
+            <label className="block font-medium mb-2 text-slate-900">Diet Type</label>
             <input
               type="text"
               value={dietType}
               onChange={(e) => handleChange("dietType", e.target.value)}
-              className="w-full border px-4 py-2 rounded-md"
+              className={inputStyle}
               placeholder="e.g., Vegan"
             />
           </div>
 
           <div>
-            <label className="block font-medium mb-2">Food Type</label>
+            <label className="block font-medium mb-2 text-slate-900">Food Type</label>
             <input
               type="text"
               value={foodType}
               onChange={(e) => handleChange("foodType", e.target.value)}
-              className="w-full border px-4 py-2 rounded-md"
+              className={inputStyle}
               placeholder="e.g., Main Course"
             />
           </div>
         </div>
 
         <div>
-          <label className="block font-medium mb-2">Ingredients</label>
+          <label className="block font-medium mb-2 text-slate-900">Ingredients</label>
           {ingredients.map((ing, index) => (
             <input
               key={index}
@@ -260,14 +262,14 @@ const UpdateRecipe = () => {
                 newIngredients[index] = e.target.value;
                 handleChange("ingredients", newIngredients);
               }}
-              className="w-full border px-4 py-2 mb-2 rounded-md"
+              className={inputStyle}
               placeholder={`Ingredient ${index + 1}`}
               required
             />
           ))}
           <button
             type="button"
-            className="text-sm text-blue-600"
+            className="text-md text-slate-800 font-semibold bg-amber-600 hover:bg-amber-700 bg:text-blue-200 py-1 px-3 rounded"
             onClick={addIngredient}
           >
             + Add Ingredient
@@ -275,7 +277,7 @@ const UpdateRecipe = () => {
         </div>
 
         <div>
-          <label className="block font-medium mb-2">Instructions</label>
+          <label className="block font-medium mb-2 text-slate-900">Instructions</label>
           {instructions.map((step, index) => (
             <textarea
               key={index}
@@ -285,14 +287,14 @@ const UpdateRecipe = () => {
                 newInstructions[index] = e.target.value;
                 handleChange("instructions", newInstructions);
               }}
-              className="w-full border px-4 py-2 mb-2 rounded-md"
+              className={inputStyle}
               placeholder={`Step ${index + 1}`}
               required
             />
           ))}
           <button
             type="button"
-            className="text-sm text-blue-600"
+            className="text-md text-slate-800 font-semibold bg-amber-600 hover:bg-amber-700 bg:text-blue-200 py-1 px-3 rounded"
             onClick={addInstruction}
           >
             + Add Step
@@ -301,23 +303,23 @@ const UpdateRecipe = () => {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block font-medium mb-2">Prep Time (min)</label>
+            <label className="block font-medium mb-2 text-slate-900">Prep Time (min)</label>
             <input
               type="number"
               value={prepTime || 0}
               onChange={(e) => handleChange("prepTime", e.target.value)}
-              className="w-full border px-4 py-2 rounded-md"
+              className={inputStyle}
               min={0}
               required
             />
           </div>
           <div>
-            <label className="block font-medium mb-2">Cook Time (min)</label>
+            <label className="block font-medium mb-2 text-slate-900">Cook Time (min)</label>
             <input
               type="number"
               value={cookTime || 0}
               onChange={(e) => handleChange("cookTime", e.target.value)}
-              className="w-full border px-4 py-2 rounded-md"
+              className={inputStyle}
               min={0}
               required
             />
@@ -325,24 +327,24 @@ const UpdateRecipe = () => {
         </div>
 
         <div>
-          <label className="block font-medium mb-2">Servings</label>
+          <label className="block font-medium mb-2 text-slate-900">Servings</label>
           <input
             type="number"
             value={servings || 1}
             onChange={(e) => handleChange("servings", e.target.value)}
-            className="w-full border px-4 py-2 rounded-md"
+            className={inputStyle}
             min={1}
             required
           />
         </div>
 
         <div>
-          <label className="block font-medium mb-2">Nutrition (per serving)</label>
+          <label className="block font-medium mb-2 text-slate-900">Nutrition (per serving)</label>
           <input
             type="number"
             value={calories}
             onChange={(e) => handleChange("calories", e.target.value)}
-            className="w-full border px-4 py-2 mb-2 rounded-md"
+            className={inputStyle}
             placeholder="Calories"
             min={0}
           />
@@ -350,7 +352,7 @@ const UpdateRecipe = () => {
             type="number"
             value={protein}
             onChange={(e) => handleChange("protein", e.target.value)}
-            className="w-full border px-4 py-2 mb-2 rounded-md"
+            className={inputStyle}
             placeholder="Protein (g)"
             min={0}
           />
@@ -358,7 +360,7 @@ const UpdateRecipe = () => {
             type="number"
             value={fat}
             onChange={(e) => handleChange("fat", e.target.value)}
-            className="w-full border px-4 py-2 mb-2 rounded-md"
+            className={inputStyle}
             placeholder="Fat (g)"
             min={0}
           />
@@ -366,7 +368,7 @@ const UpdateRecipe = () => {
             type="number"
             value={carbs}
             onChange={(e) => handleChange("carbs", e.target.value)}
-            className="w-full border px-4 py-2 mb-2 rounded-md"
+            className={inputStyle}
             placeholder="Carbs (g)"
             min={0}
           />

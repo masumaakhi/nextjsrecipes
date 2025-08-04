@@ -75,13 +75,56 @@ export async function PUT(req) {
 //   }
 // }
 
+// export async function GET(req) {
+//   await connectDb();
+
+//   const url = new URL(req.url);
+//   const params = url.searchParams;
+//   const status = url.searchParams.get("status"); // ✅ read ?status=pending 
+//   const filter = { status: "approved" };
+
+ 
+//   // 🔍 Search keyword from ?search=
+//   const search = params.get("search");
+//   if (search) {
+//     filter.$or = [
+//       { title: { $regex: search, $options: "i" } },
+//       { description: { $regex: search, $options: "i" } },
+//       { ingredients: { $regex: search, $options: "i" } },
+//     ];
+//   }
+
+//   // 🍽️ Other filters
+//   if (params.get("cuisine")) filter["category.cuisine"] = params.get("cuisine");
+//   if (params.get("dietType")) filter["category.dietType"] = params.get("dietType");
+//   if (params.get("foodType")) filter["category.foodType"] = params.get("foodType");
+
+//   const minCookTime = Number(params.get("minCookTime") || 0);
+//   const maxCookTime = Number(params.get("maxCookTime") || 120);
+//   const minServings = Number(params.get("minServings") || 1);
+//   const maxServings = Number(params.get("maxServings") || 10);
+
+//   filter.cookTime = { $gte: minCookTime, $lte: maxCookTime };
+//   filter.servings = { $gte: minServings, $lte: maxServings };
+
+//   try {
+//     const recipes = await Recipe.find(filter).populate("createdBy", "name");
+//     return NextResponse.json({ success: true, recipes });
+//   } catch (error) {
+//     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+//   }
+// }
+
 export async function GET(req) {
   await connectDb();
 
   const url = new URL(req.url);
   const params = url.searchParams;
+  const status = url.searchParams.get("status"); // ✅ read ?status=pending 
+  const filter = { status: "approved" }; // ✅ default fallback
 
-  const filter = { status: "approved" };
+  // ✅ override if query includes custom status
+  if (status) filter.status = status;
 
   // 🔍 Search keyword from ?search=
   const search = params.get("search");
@@ -113,6 +156,7 @@ export async function GET(req) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }
+
 
 export async function PATCH(req) {
   await connectDb();

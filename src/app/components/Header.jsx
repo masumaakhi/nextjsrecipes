@@ -134,7 +134,7 @@ const Header = () => {
             transition={{ duration: 0.4, ease: "easeOut" }}
             className="flex justify-center"
           >
-            <div className="relative w-[300px] h-[300px] rounded-full">
+            <div className="relative w-[300px] h-[300px] md:w-[250px] md:h-[250px] rounded-full">
               <img
                 src={recipe.image}
                 alt={recipe.title}
@@ -223,7 +223,7 @@ const Header = () => {
             <img
               src={dish.image}
               alt={dish.title}
-              className="w-20 h-20 rounded-full scale-3d object-cover shadow-md"
+              className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-20 lg:h-20 rounded-full scale-3d object-cover shadow-md"
             />
             <p className="text-sm mt-2 text-slate-800 text-center font-semibold">
               {dish.title}

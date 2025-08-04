@@ -401,6 +401,8 @@ toast.success("Registration successful!");
     }
   };
 
+  const inputStyle = "w-full border px-4 py-2 mb-2 rounded-xl  border-slate-600 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500"
+
   return (
     <div className="max-w-md mx-auto my-[5rem] p-6 bg-opacity-70 backdrop-blur mt-[6rem] rounded-lg shadow-2xl">
       <h2 className="text-2xl font-semibold text-center text-slate-700 mb-4">
@@ -411,7 +413,7 @@ toast.success("Registration successful!");
         type="button"
         onClick={() => signIn("google", { callbackUrl: "/" })}
         disabled={loading}
-        className={`mt-6 w-full bg-blue-500 hover:bg-blue-400 mb-4 text-white py-2 rounded-md text-xl font-medium ${
+        className={`mt-6 w-full bg-blue-500 hover:bg-blue-400 mb-4 text-white py-2 rounded-xl text-xl font-medium ${
           loading ? "opacity-60 cursor-not-allowed" : ""
         }`}
       >
@@ -433,7 +435,7 @@ toast.success("Registration successful!");
             placeholder="Enter your name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full px-4 py-2 bg-[#cacbca] border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400"
+            className={inputStyle}
             required
           />
         </div>
@@ -449,7 +451,7 @@ toast.success("Registration successful!");
             placeholder="Enter your email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-4 py-2 bg-[#cacbca] border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400"
+            className={inputStyle}
             required
           />
         </div>
@@ -466,7 +468,7 @@ toast.success("Registration successful!");
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 pr-10 bg-[#cacbca] border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className={inputStyle}
               required
               minLength={6}
             />
@@ -493,7 +495,7 @@ toast.success("Registration successful!");
               placeholder="Confirm your password"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full px-4 py-2 pr-10 bg-[#cacbca] border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className={inputStyle}
               required
               minLength={6}
             />
@@ -514,7 +516,7 @@ toast.success("Registration successful!");
         <button
           type="submit"
           disabled={loading}
-          className={`w-full rounded-md text-md font-semibold bg-orange-400 hover:bg-orange-500 hover:text-white text-slate-100 hover:shadow-amber-200 py-2 text-md ${
+          className={`w-full rounded-xl text-md font-semibold bg-orange-400 hover:bg-orange-500 hover:text-white text-slate-100 hover:shadow-amber-200 py-2 text-md ${
             loading ? "opacity-60 cursor-not-allowed" : ""
           }`}
         >

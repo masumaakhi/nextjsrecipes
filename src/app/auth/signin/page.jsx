@@ -56,8 +56,7 @@ const SignIn = () => {
     router.push("/");
   };
 
-  const inputStyle =
-    "w-full px-4 py-2 bg-[#cacbca] border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400";
+   const inputStyle = "w-full border px-4 py-2 mb-2 rounded-xl  border-slate-600 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500"
 
   return (
     <div className="max-w-md mx-auto my-[5rem] p-6 bg-opacity-70 backdrop-blur mt-[6rem] rounded-lg shadow-2xl">
@@ -66,7 +65,7 @@ const SignIn = () => {
       </h2>
 
       {/* Google Sign In Button */}
-      <button className="mt-6 w-full bg-blue-500 hover:bg-blue-400 mb-4 text-white py-2 rounded-md text-xl font-medium"
+      <button className="mt-6 w-full bg-blue-500 hover:bg-blue-400 mb-4 text-white py-2 rounded-xl text-xl font-medium"
        onClick={() => signIn("google", { callbackUrl: "/" })}
       >
         Sign In with Google
@@ -121,7 +120,7 @@ const SignIn = () => {
         {/* Sign In Button */}
         <button
           type="submit"
-          className="w-full rounded-md  text-md font-semibold  bg-orange-400 hover:bg-orange-500 hover:text-white text-slate-100 hover:shadow-amber-200 py-2 text-md"
+          className="w-full rounded-xl  text-md font-semibold  bg-orange-400 hover:bg-orange-500 hover:text-white text-slate-100 hover:shadow-amber-200 py-2 text-md"
         >
           Sign In
         </button>

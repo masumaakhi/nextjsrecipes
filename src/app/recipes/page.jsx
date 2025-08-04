@@ -61,7 +61,7 @@ const Recipes = () => {
   if (!recipes) return <div>Loading...</div>;
 
   return (
-    <div className="px-6 mt-[6rem] mb-2">
+    <div className="px-6 mt-[6rem] mb-2 max-w-[86rem] mx-auto">
       {/* Suspense for search */}
       <Suspense fallback={null}>
         <SearchWrapper onSearchChange={setSearch} />
@@ -110,11 +110,11 @@ const Recipes = () => {
 
       {/* 🧾 Sidebar */}
       <div
-        className={`fixed top-0 left-0 z-50 h-full w-80 bg-white shadow-lg transition-transform duration-300 ${
+        className={`fixed top-0 left-0 z-50 h-full w-80 bg-opacity-70 backdrop-blur rounded-lg shadow-2xl  transition-transform duration-300 ${
           showSidebar ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex justify-end p-4">
+        <div className="flex justify-end text-slate-900 p-4">
           <button onClick={() => setShowSidebar(false)}>
             <X size={24} />
           </button>
@@ -122,15 +122,15 @@ const Recipes = () => {
         <RecipeFilterSidebar setFilters={setFilters} />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {recipes.length === 0 && (
-          <p className="text-center col-span-full">No recipes found.</p>
+          <p className="text-center col-span-full text-md text-slate-900">No recipes found.</p>
         )}
 
         {recipes.map((recipe) => (
-          <div key={recipe._id} className="bg-white rounded-lg shadow-md">
+          <div key={recipe._id} className="bg-white rounded-lg shadow-lg">
             <Link href={`/recipes/${recipe._id}`}>
-              <div className="relative w-full h-64 rounded-t-lg overflow-hidden">
+              <div className="relative w-full h-54 rounded-t-lg rounded-b-md overflow-hidden">
                 <Image
                   src={recipe.imageUrl}
                   alt={recipe.title}
@@ -141,13 +141,13 @@ const Recipes = () => {
             </Link>
 
             <div className="p-4">
-              <h3 className="text-xl font-semibold">
-                {highlightMatch(recipe.title, search)}
+              <h3 className="text-xl text-slate-900 font-semibold">
+                {highlightMatch(recipe.title, search)} <span>***</span>
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-slate-800">
                 By {recipe.createdBy?.name || "Unknown"}
               </p>
-              <p className="text-gray-700">
+              <p className="text-slate-800">
                 {highlightMatch(recipe.description, search)}
               </p>
             </div>

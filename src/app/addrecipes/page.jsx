@@ -1,177 +1,4 @@
-// // Updated addrecipes/page.jsx with Save functionality (POST to /api/recipes)
 
-// "use client";
-// import React, { useState } from "react";
-// import axios from "axios";
-// import { useRouter } from "next/navigation";
-
-// const AddRecipes = () => {
-//   const router = useRouter();
-//   const [title, setTitle] = useState("");
-//   const [description, setDescription] = useState("");
-//   const [cuisine, setCuisine] = useState("");
-//   const [mealType, setMealType] = useState("");
-//   const [dietType, setDietType] = useState("");
-//   const [foodType, setFoodType] = useState("");
-//   const [ingredients, setIngredients] = useState([""]);
-//   const [instructions, setInstructions] = useState([""]);
-//   const [prepTime, setPrepTime] = useState(0);
-//   const [cookTime, setCookTime] = useState(0);
-//   const [servings, setServings] = useState(1);
-//   const [calories, setCalories] = useState(0);
-//   const [protein, setProtein] = useState(0);
-//   const [fat, setFat] = useState(0);
-//   const [carbs, setCarbs] = useState(0);
-//   const [imageUrl, setImageUrl] = useState("");
-
-//   const addIngredient = () => setIngredients([...ingredients, ""]);
-//   const addInstruction = () => setInstructions([...instructions, ""]);
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     try {
-//       const res = await axios.post("/api/recipes", {
-//         title,
-//         description,
-//         imageUrl,
-//         prepTime,
-//         cookTime,
-//         servings,
-//         ingredients,
-//         instructions,
-//         nutrition: {
-//           calories,
-//           protein,
-//           fat,
-//           carbs,
-//         },
-//         category: {
-//           cuisine: [cuisine],
-//           mealType: [mealType],
-//           dietType: [dietType],
-//           foodType: [foodType],
-//         },
-//       });
-//       if (res.status === 201) {
-//         router.push("/recipes");
-//       }
-//     } catch (err) {
-//       console.error("Error creating recipe:", err);
-//     }
-//   };
-
-//   return (
-//     <div className="max-w-2xl mt-[7rem] mx-auto bg-orange-50 p-6 rounded-lg shadow-lg my-16">
-//       <div className="flex justify-between items-center mb-6">
-//         <h2 className="text-2xl font-bold">Create a New Recipe</h2>
-//         <button
-//           onClick={handleSubmit}
-//           className="bg-green-600 hover:bg-green-700 text-white py-1 px-3 rounded-md font-semibold"
-//         >
-//           Save Recipe
-//         </button>
-//       </div>
-
-//       <form className="space-y-6">
-//         <div>
-//           <label className="block font-medium mb-2">Title</label>
-//           <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full border px-4 py-2 rounded-md" />
-//         </div>
-
-//         <div>
-//           <label className="block font-medium mb-2">Description</label>
-//           <textarea maxLength="500" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full border px-4 py-2 rounded-md" />
-//         </div>
-
-//         <div className="grid grid-cols-2 gap-4">
-//           <div>
-//             <label className="block font-medium mb-2">Cuisine</label>
-//             <input type="text" value={cuisine} onChange={(e) => setCuisine(e.target.value)} className="w-full border px-4 py-2 rounded-md" placeholder="e.g., Indian" />
-//           </div>
-
-//           <div>
-//             <label className="block font-medium mb-2">Meal Type</label>
-//             <select value={mealType} onChange={(e) => setMealType(e.target.value)} className="w-full border px-4 py-2 rounded-md">
-//               <option value="">-- Select Meal Type --</option>
-//               <option value="Breakfast">Breakfast</option>
-//               <option value="Brunch">Brunch</option>
-//               <option value="Lunch">Lunch</option>
-//               <option value="Dinner">Dinner</option>
-//               <option value="Snacks">Snacks</option>
-//               <option value="Late Night">Late Night</option>
-//               <option value="Pre-Workout">Pre-Workout</option>
-//               <option value="Post-Workout">Post-Workout</option>
-//             </select>
-//           </div>
-//           <div>
-//             <label className="block font-medium mb-2">Diet Type</label>
-//             <input type="text" value={dietType} onChange={(e) => setDietType(e.target.value)} className="w-full border px-4 py-2 rounded-md" placeholder="e.g., Vegan" />
-//           </div>
-//           <div>
-//             <label className="block font-medium mb-2">Food Type</label>
-//             <input type="text" value={foodType} onChange={(e) => setFoodType(e.target.value)} className="w-full border px-4 py-2 rounded-md" placeholder="e.g., Main Course" />
-//           </div>
-//         </div>
-
-//         <div>
-//           <label className="block font-medium mb-2">Ingredients</label>
-//           {ingredients.map((ing, index) => (
-//             <input key={index} type="text" value={ing} onChange={(e) => {
-//               const newIngredients = [...ingredients];
-//               newIngredients[index] = e.target.value;
-//               setIngredients(newIngredients);
-//             }} className="w-full border px-4 py-2 mb-2 rounded-md" placeholder={`Ingredient ${index + 1}`} />
-//           ))}
-//           <button type="button" className="text-sm text-blue-600" onClick={addIngredient}>+ Add Ingredient</button>
-//         </div>
-
-//         <div>
-//           <label className="block font-medium mb-2">Instructions</label>
-//           {instructions.map((step, index) => (
-//             <textarea key={index} value={step} onChange={(e) => {
-//               const newInstructions = [...instructions];
-//               newInstructions[index] = e.target.value;
-//               setInstructions(newInstructions);
-//             }} className="w-full border px-4 py-2 mb-2 rounded-md" placeholder={`Step ${index + 1}`} />
-//           ))}
-//           <button type="button" className="text-sm text-blue-600" onClick={addInstruction}>+ Add Step</button>
-//         </div>
-
-//         <div className="grid grid-cols-2 gap-4">
-//           <div>
-//             <label className="block font-medium mb-2">Prep Time (min)</label>
-//             <input type="number" value={prepTime} onChange={(e) => setPrepTime(parseInt(e.target.value))} className="w-full border px-4 py-2 rounded-md" />
-//           </div>
-//           <div>
-//             <label className="block font-medium mb-2">Cook Time (min)</label>
-//             <input type="number" value={cookTime} onChange={(e) => setCookTime(parseInt(e.target.value))} className="w-full border px-4 py-2 rounded-md" />
-//           </div>
-//         </div>
-
-//         <div>
-//           <label className="block font-medium mb-2">Servings</label>
-//           <input type="number" value={servings} onChange={(e) => setServings(parseInt(e.target.value))} className="w-full border px-4 py-2 rounded-md" />
-//         </div>
-
-//         <div>
-//           <label className="block font-medium mb-2">Nutrition (per serving)</label>
-//           <input type="number" value={calories} onChange={(e) => setCalories(parseInt(e.target.value))} className="w-full border px-4 py-2 mb-2 rounded-md" placeholder="Calories" />
-//           <input type="number" value={protein} onChange={(e) => setProtein(parseInt(e.target.value))} className="w-full border px-4 py-2 mb-2 rounded-md" placeholder="Protein (g)" />
-//           <input type="number" value={fat} onChange={(e) => setFat(parseInt(e.target.value))} className="w-full border px-4 py-2 mb-2 rounded-md" placeholder="Fat (g)" />
-//           <input type="number" value={carbs} onChange={(e) => setCarbs(parseInt(e.target.value))} className="w-full border px-4 py-2 mb-2 rounded-md" placeholder="Carbs (g)" />
-//         </div>
-
-//         <div>
-//           <label className="block font-medium mb-2">Image URL</label>
-//           <input type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="w-full border px-4 py-2 rounded-md" placeholder="https://..." />
-//         </div>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default AddRecipes;
 
 //src/app/addrecipes/page.js
 "use client";
@@ -289,10 +116,12 @@ const AddRecipes = () => {
     }
   };
 
+  const inputStyle = "w-full border px-4 py-2 mb-2 rounded-md  border-slate-600 text-slate-900  focus:outline-none focus:ring-2 focus:ring-blue-500"
+
   return (
-    <div className="max-w-2xl mt-[7rem] mx-auto bg-orange-50 p-6 rounded-lg shadow-lg my-16">
+    <div className="max-w-2xl mt-[7rem] mx-auto bg-opacity-70 backdrop-blur  p-6 rounded-lg shadow-2xl my-16">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Create a New Recipe</h2>
+        <h2 className="text-2xl font-bold text-slate-900">Create a New Recipe</h2>
         <button
           onClick={handleSubmit}
           disabled={loading}
@@ -307,24 +136,24 @@ const AddRecipes = () => {
       <form className="space-y-6" onSubmit={handleSubmit}>
         {/* Title */}
         <div>
-          <label className="block font-medium mb-2">Title</label>
+          <label className="block font-medium mb-2 text-slate-900">Title</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full border px-4 py-2 rounded-md"
+            className={inputStyle}
             required
           />
         </div>
 
         {/* Description */}
         <div>
-          <label className="block font-medium mb-2">Description</label>
+          <label className="block font-medium mb-2 text-slate-900">Description</label>
           <textarea
             maxLength={500}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full border px-4 py-2 rounded-md"
+            className={inputStyle}
             required
           />
         </div>
@@ -332,22 +161,22 @@ const AddRecipes = () => {
         {/* Category Inputs */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block font-medium mb-2">Cuisine</label>
+            <label className="block font-medium mb-2 text-slate-900">Cuisine</label>
             <input
               type="text"
               value={cuisine}
               onChange={(e) => setCuisine(e.target.value)}
-              className="w-full border px-4 py-2 rounded-md"
+              className={inputStyle}
               placeholder="e.g., Indian"
             />
           </div>
 
           <div>
-            <label className="block font-medium mb-2">Meal Type</label>
+            <label className="block font-medium mb-2 text-slate-900">Meal Type</label>
             <select
               value={mealType}
               onChange={(e) => setMealType(e.target.value)}
-              className="w-full border px-4 py-2 rounded-md"
+              className={inputStyle}
             >
               <option value="">-- Select Meal Type --</option>
               <option value="Breakfast">Breakfast</option>
@@ -362,23 +191,23 @@ const AddRecipes = () => {
           </div>
 
           <div>
-            <label className="block font-medium mb-2">Diet Type</label>
+            <label className="block font-medium mb-2 text-slate-900">Diet Type</label>
             <input
               type="text"
               value={dietType}
               onChange={(e) => setDietType(e.target.value)}
-              className="w-full border px-4 py-2 rounded-md"
+              className={inputStyle}
               placeholder="e.g., Vegan"
             />
           </div>
 
           <div>
-            <label className="block font-medium mb-2">Food Type</label>
+            <label className="block font-medium mb-2 text-slate-900">Food Type</label>
             <input
               type="text"
               value={foodType}
               onChange={(e) => setFoodType(e.target.value)}
-              className="w-full border px-4 py-2 rounded-md"
+              className={inputStyle}
               placeholder="e.g., Main Course"
             />
           </div>
@@ -386,7 +215,7 @@ const AddRecipes = () => {
 
         {/* Ingredients */}
         <div>
-          <label className="block font-medium mb-2">Ingredients</label>
+          <label className="block font-medium mb-2 text-slate-900">Ingredients</label>
           {ingredients.map((ing, index) => (
             <input
               key={index}
@@ -397,14 +226,14 @@ const AddRecipes = () => {
                 newIngredients[index] = e.target.value;
                 setIngredients(newIngredients);
               }}
-              className="w-full border px-4 py-2 mb-2 rounded-md"
+              className={inputStyle}
               placeholder={`Ingredient ${index + 1}`}
               required
             />
           ))}
           <button
             type="button"
-            className="text-sm text-blue-600"
+            className="text-md text-slate-800 font-semibold bg-amber-600 hover:bg-amber-700 bg:text-blue-200 py-1 px-3 rounded"
             onClick={addIngredient}
           >
             + Add Ingredient
@@ -413,7 +242,7 @@ const AddRecipes = () => {
 
         {/* Instructions */}
         <div>
-          <label className="block font-medium mb-2">Instructions</label>
+          <label className="block font-medium mb-2 text-slate-900">Instructions</label>
           {instructions.map((step, index) => (
             <textarea
               key={index}
@@ -423,14 +252,14 @@ const AddRecipes = () => {
                 newInstructions[index] = e.target.value;
                 setInstructions(newInstructions);
               }}
-              className="w-full border px-4 py-2 mb-2 rounded-md"
+              className={inputStyle}
               placeholder={`Step ${index + 1}`}
               required
             />
           ))}
           <button
             type="button"
-            className="text-sm text-blue-600"
+            className="text-md text-slate-800 font-semibold bg-amber-600 hover:bg-amber-700 bg:text-blue-200 py-1 px-3 rounded"
             onClick={addInstruction}
           >
             + Add Step
@@ -440,23 +269,23 @@ const AddRecipes = () => {
         {/* Prep & Cook Time */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block font-medium mb-2">Prep Time (min)</label>
+            <label className="block font-medium mb-2 text-slate-900">Prep Time (min)</label>
             <input
               type="number"
               value={prepTime}
               onChange={(e) => setPrepTime(e.target.value)}
-              className="w-full border px-4 py-2 rounded-md"
+              className={inputStyle}
               min={0}
               required
             />
           </div>
           <div>
-            <label className="block font-medium mb-2">Cook Time (min)</label>
+            <label className="block font-medium mb-2 text-slate-900">Cook Time (min)</label>
             <input
               type="number"
               value={cookTime}
               onChange={(e) => setCookTime(e.target.value)}
-              className="w-full border px-4 py-2 rounded-md"
+              className={inputStyle}
               min={0}
               required
             />
@@ -465,12 +294,12 @@ const AddRecipes = () => {
 
         {/* Servings */}
         <div>
-          <label className="block font-medium mb-2">Servings</label>
+          <label className="block font-medium mb-2 text-slate-900">Servings</label>
           <input
             type="number"
             value={servings}
             onChange={(e) => setServings(e.target.value)}
-            className="w-full border px-4 py-2 rounded-md"
+            className={inputStyle}
             min={1}
             required
           />
@@ -478,14 +307,14 @@ const AddRecipes = () => {
 
         {/* Nutrition */}
         <div>
-          <label className="block font-medium mb-2">
+          <label className="block font-medium mb-2 text-slate-900">
             Nutrition (per serving)
           </label>
           <input
             type="number"
             value={calories}
             onChange={(e) => setCalories(e.target.value)}
-            className="w-full border px-4 py-2 mb-2 rounded-md"
+            className={inputStyle}
             placeholder="Calories"
             min={0}
           />
@@ -493,7 +322,7 @@ const AddRecipes = () => {
             type="number"
             value={protein}
             onChange={(e) => setProtein(e.target.value)}
-            className="w-full border px-4 py-2 mb-2 rounded-md"
+            className={inputStyle}
             placeholder="Protein (g)"
             min={0}
           />
@@ -501,7 +330,7 @@ const AddRecipes = () => {
             type="number"
             value={fat}
             onChange={(e) => setFat(e.target.value)}
-            className="w-full border px-4 py-2 mb-2 rounded-md"
+            className={inputStyle}
             placeholder="Fat (g)"
             min={0}
           />
@@ -509,7 +338,7 @@ const AddRecipes = () => {
             type="number"
             value={carbs}
             onChange={(e) => setCarbs(e.target.value)}
-            className="w-full border px-4 py-2 mb-2 rounded-md"
+            className={inputStyle}
             placeholder="Carbs (g)"
             min={0}
           />
@@ -517,12 +346,12 @@ const AddRecipes = () => {
 
         {/* Image Upload */}
         <div>
-          <label className="block font-medium mb-2">Upload Image</label>
+          <label className="block font-medium mb-2 text-slate-900">Upload Image</label>
           <input
             type="file"
             accept="image/*"
             onChange={(e) => setImageFile(e.target.files[0])}
-            className="w-full"
+            className={inputStyle}
             required
           />
         </div>

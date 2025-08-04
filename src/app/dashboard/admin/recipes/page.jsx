@@ -195,11 +195,11 @@ export default function RecipesTable() {
           <input
             type="text"
             placeholder="Search recipes by name"
-            className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-gray-300 text-slate-900 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <Link
             href="/addrecipes"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md"
           >
             New Recipe
           </Link>
@@ -216,7 +216,7 @@ export default function RecipesTable() {
               <th className="px-4 py-3 text-left font-medium">
                 Total Nutrition
               </th>
-              <th className="px-6 py-4 text-left">Author</th>
+              <th className="px-4 py-4 text-left">Author</th>
               <th className="px-4 py-3 text-left font-medium">Status</th>
               <th className="px-4 py-3 text-left font-medium">Actions</th>
             </tr>

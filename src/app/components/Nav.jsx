@@ -114,7 +114,7 @@ const Nav = () => {
             />
             <button
               type="submit"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-black p-2 rounded-md hover:bg-gray-200 transition"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-black p-2 rounded-full hover:bg-gray-600 hover:rounded-full hover:text-white transition"
             >
               <Search className="w-5 h-5" />
             </button>
@@ -195,7 +195,7 @@ const Nav = () => {
         </nav>
 
         {/* Mobile menu icon */}
-        <div className="md:hidden">
+        <div className="md:hidden text-slate-800">
           {menuOpen ? (
             <X className="w-6 h-6" onClick={() => setMenuOpen(false)} />
           ) : (
