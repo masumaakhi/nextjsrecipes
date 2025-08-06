@@ -29,8 +29,8 @@ const Nav = () => {
     { label: "Home", href: "/" },
     { label: "Recipes", href: "/recipes" },
     { label: "About", href: "/about" },
-    { label: "Blog", href: "/blog" },
-    { label: "Add Blog", href: "/addblog" },
+    // { label: "Blog", href: "/blog" },
+    // { label: "Add Blog", href: "/addblog" },
   ];
   useEffect(() => {
     console.log("Session data:", data);
@@ -65,16 +65,16 @@ const Nav = () => {
   const adminRoutes =
     data?.user?.role === "admin"
       ? [
-          { label: "Admin Dashboard", href: "/dashboard/admin/admindashboard" },
+          { label: "Admin Dashboard", href: "/dashboard/admin/profile" },
           { label: "Manage Users", href: "/dashboard/admin/users" },
           { label: "Manage Recipes", href: "/dashboard/admin/recipes" },
           { label: "Pending Recipes", href: "/dashboard/admin/pendingrecipes" },
-          { label: "Manage Blogs", href: "/dashboard/admin/blogs" },
-          { label: "Pending Blogs", href: "/dashboard/admin/pendingsblogs" },
-          { label: "Manage Reviews", href: "/dashboard/admin/reviews" },
-          { label: "Manage Comments", href: "/dashboard/admin/comments" },
-          { label: "Manage Categories", href: "/dashboard/admin/categories" },
-          { label: "Analytics", href: "/dashboard/admin/analytics" },
+          // { label: "Manage Blogs", href: "/dashboard/admin/blogs" },
+          // { label: "Pending Blogs", href: "/dashboard/admin/pendingsblogs" },
+          // { label: "Manage Reviews", href: "/dashboard/admin/reviews" },
+          // { label: "Manage Comments", href: "/dashboard/admin/comments" },
+          // { label: "Manage Categories", href: "/dashboard/admin/categories" },
+          // { label: "Analytics", href: "/dashboard/admin/analytics" },
         ]
       : [];
 

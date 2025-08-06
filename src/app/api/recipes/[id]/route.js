@@ -4,6 +4,7 @@ import connectDb from "@/lib/connectDb";
 import Recipe from "@/models/recipe";
 
 export async function GET(req, { params }) {
+   const { id } = await params;
   await connectDb();
 
   try {

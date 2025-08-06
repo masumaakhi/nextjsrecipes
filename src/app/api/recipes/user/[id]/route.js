@@ -7,6 +7,7 @@ import Recipe from "@/models/recipe";
 
 export async function GET(req, { params }) {
   await connectDb();
+   const { id } = await params;
 
   try {
     const recipes = await Recipe.find({ createdBy: params.id }).sort({ createdAt: -1 });

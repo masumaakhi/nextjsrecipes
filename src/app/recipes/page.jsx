@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SlidersHorizontal, X } from "lucide-react";
+import { FaHeart } from "react-icons/fa"
 import Image from "next/image";
 import { highlightMatch } from "@/utils/highlightMatch";
 import RecipeFilterSidebar from "../components/RecipeFilterSidebar";
@@ -13,6 +14,7 @@ import { useSearchParams } from "next/navigation";
 const SearchWrapper = ({ onSearchChange }) => {
   const searchParams = useSearchParams();
   const search = searchParams.get("search");
+
 
   useEffect(() => {
     onSearchChange(search);
@@ -35,6 +37,8 @@ const Recipes = () => {
     maxServings: 10,
   });
   const [showSidebar, setShowSidebar] = useState(false);
+  
+  const [favorites, setFavorites] = useState([]);
 
   const fetchRecipes = async () => {
     const params = new URLSearchParams(filters);
@@ -57,6 +61,31 @@ const Recipes = () => {
     };
     fetchRecipes();
   }, []);
+
+    useEffect(() => {
+    async function fetchFavorites() {
+      const res = await fetch("/api/users/me/favorites");
+      const data = await res.json();
+      if (data.success) {
+        setFavorites(data.favorites.map(fav => fav._id)); // _id এর array নেবে
+      }
+    }
+    fetchFavorites();
+  }, []);
+
+  // ফেভারিট টগল ফাংশন
+  const toggleFavorite = async (recipeId) => {
+    const res = await fetch("/api/users/me/favorites", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ recipeId }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      setFavorites(data.favorites.map(fav => fav.toString()));
+    }
+  };
+
 
   if (!recipes) return <div>Loading...</div>;
 
@@ -127,7 +156,7 @@ const Recipes = () => {
           <p className="text-center col-span-full text-md text-slate-900">No recipes found.</p>
         )}
 
-        {recipes.map((recipe) => (
+        {/* {recipes.map((recipe) => (
           <div key={recipe._id} className="bg-white rounded-lg shadow-lg">
             <Link href={`/recipes/${recipe._id}`}>
               <div className="relative w-full h-54 rounded-t-lg rounded-b-md overflow-hidden">
@@ -152,10 +181,248 @@ const Recipes = () => {
               </p>
             </div>
           </div>
-        ))}
+        ))} */}
+
+        {recipes.map((recipe) => {
+          const isFavorited = favorites.includes(recipe._id);
+
+          return (
+            <div key={recipe._id}  className="relative bg-white rounded-lg shadow-lg">
+              
+                <div className="relative w-full h-54 rounded-t-lg rounded-b-md overflow-hidden">
+                  <Image
+                    src={recipe.imageUrl}
+                    alt={recipe.title}
+                    fill
+                    style={{ objectFit: "cover" }}
+                  />
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleFavorite(recipe._id);
+                    }}
+                    className={`absolute top-3 right-3 z-10 text-2xl transition-colors duration-300 ${
+                      isFavorited ? "text-red-600" : "text-gray-400 hover:text-red-500"
+                    }`}
+                    aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+                  >
+                    <FaHeart />
+                  </button>
+                </div>
+              
+              <Link href={`/recipes/${recipe._id}`}>
+              <div className="p-4">
+                <h3 className="text-xl text-slate-900 font-semibold">
+                  {highlightMatch(recipe.title, search)} <span>***</span>
+                </h3>
+                <p className="text-sm text-slate-800">
+                  By {recipe.createdBy?.name || "Unknown"}
+                </p>
+                <p className="text-slate-800">
+                  {highlightMatch(recipe.description, search)}
+                </p>
+              </div>
+              </Link>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 };
 
 export default Recipes;
+
+
+// "use client";
+// import { useEffect, useState, Suspense } from "react";
+// import { useRouter, useSearchParams } from "next/navigation";
+// import Link from "next/link";
+// import { SlidersHorizontal, X } from "lucide-react";
+// import { FaHeart } from "react-icons/fa";
+// import Image from "next/image";
+// import { highlightMatch } from "@/utils/highlightMatch";
+// import RecipeFilterSidebar from "../components/RecipeFilterSidebar";
+
+// const SearchWrapper = ({ onSearchChange }) => {
+//   const searchParams = useSearchParams();
+//   const search = searchParams.get("search");
+
+//   useEffect(() => {
+//     onSearchChange(search);
+//   }, [search]);
+
+//   return null;
+// };
+
+// const Recipes = () => {
+//   const router = useRouter();
+//   const [recipes, setRecipes] = useState([]);
+//   const [search, setSearch] = useState(null);
+//   const [filters, setFilters] = useState({
+//     cuisine: "",
+//     dietType: "",
+//     foodType: "",
+//     minCookTime: 0,
+//     maxCookTime: 120,
+//     minServings: 1,
+//     maxServings: 10,
+//   });
+//   const [showSidebar, setShowSidebar] = useState(false);
+//   const [favorites, setFavorites] = useState([]);
+
+//   // 🔹 Fetch Recipes
+//   const fetchRecipes = async () => {
+//     const params = new URLSearchParams(filters);
+//     if (search) params.set("search", search);
+
+//     const res = await fetch(`/api/recipes?${params.toString()}`);
+//     const data = await res.json();
+//     if (data.success) setRecipes(data.recipes);
+//   };
+
+//   useEffect(() => {
+//     fetchRecipes();
+//   }, [filters, search]);
+
+//   useEffect(() => {
+//     const fetchRecipes = async () => {
+//       const res = await fetch("/api/recipes?status=approved");
+//       const data = await res.json();
+//       if (data.success) setRecipes(data.recipes);
+//     };
+//     fetchRecipes();
+//   }, []);
+
+//   // 🔹 Fetch Favorites
+//   useEffect(() => {
+//     async function fetchFavorites() {
+//       const res = await fetch("/api/users/me/favorites");
+//       const data = await res.json();
+//       if (data.success) {
+//         setFavorites(data.favorites.map(fav => fav._id?.toString() || fav.toString()));
+//       }
+//     }
+//     fetchFavorites();
+//   }, []);
+
+//   // 🔹 Toggle Favorite
+//   const toggleFavorite = async (recipeId) => {
+//     const res = await fetch("/api/users/me/favorites", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ recipeId }),
+//     });
+//     const data = await res.json();
+//     if (data.success) {
+//       setFavorites(data.favorites.map(fav => fav.toString()));
+//     }
+//   };
+
+//   if (!recipes) return <div>Loading...</div>;
+
+//   return (
+//     <div className="px-6 mt-[6rem] mb-2 max-w-[86rem] mx-auto">
+//       <Suspense fallback={null}>
+//         <SearchWrapper onSearchChange={setSearch} />
+//       </Suspense>
+
+//       {/* Filter */}
+//       <div className="flex justify-start mb-4">
+//         <nav className="text-slate-900 text-md mb-6 flex space-x-2">
+//           <span>
+//             <SlidersHorizontal size={20} onClick={() => setShowSidebar(true)} />
+//           </span>
+//           <Link href="/" className="hover:text-slate-800">Home</Link>
+//           <span>{">"}</span>
+//           <Link href="/recipes" className="hover:text-slate-800">Recipes</Link>
+
+//           {search && (
+//             <div className="flex items-center gap-2 bg-slate-200 px-3 py-0.5 rounded-full w-fit text-md">
+//               <span className="text-black">{search}</span>
+//               <button
+//                 onClick={() => {
+//                   const newParams = new URLSearchParams(window.location.search);
+//                   newParams.delete("search");
+//                   router.push(`/recipes?${newParams.toString()}`);
+//                 }}
+//                 className="text-red-500 hover:text-red-700 font-bold"
+//                 aria-label="Clear search"
+//               >
+//                 &times;
+//               </button>
+//             </div>
+//           )}
+//         </nav>
+//       </div>
+
+//       {/* Sidebar */}
+//       {showSidebar && (
+//         <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setShowSidebar(false)} />
+//       )}
+//       <div
+//         className={`fixed top-0 left-0 z-50 h-full w-80 bg-opacity-70 backdrop-blur rounded-lg shadow-2xl transition-transform duration-300 ${
+//           showSidebar ? "translate-x-0" : "-translate-x-full"
+//         }`}
+//       >
+//         <div className="flex justify-end text-slate-900 p-4">
+//           <button onClick={() => setShowSidebar(false)}>
+//             <X size={24} />
+//           </button>
+//         </div>
+//         <RecipeFilterSidebar setFilters={setFilters} />
+//       </div>
+
+//       {/* Recipes Grid */}
+//       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+//         {recipes.length === 0 && (
+//           <p className="text-center col-span-full text-md text-slate-900">No recipes found.</p>
+//         )}
+
+//         {recipes.map((recipe) => {
+//           const isFavorited = favorites.includes(recipe._id);
+//           return (
+//             <div key={recipe._id} className="relative bg-white rounded-lg shadow-lg">
+//               <Link href={`/recipes/${recipe._id}`}>
+//                 <div className="relative w-full h-54 rounded-t-lg rounded-b-md overflow-hidden">
+//                   <Image
+//                     src={recipe.imageUrl}
+//                     alt={recipe.title}
+//                     fill
+//                     style={{ objectFit: "cover" }}
+//                   />
+//                   <button
+//                     onClick={(e) => {
+//                       e.preventDefault();
+//                       toggleFavorite(recipe._id);
+//                     }}
+//                     className={`absolute top-3 right-3 z-10 text-2xl transition-colors duration-300 ${
+//                       isFavorited ? "text-red-600" : "text-gray-400 hover:text-red-500"
+//                     }`}
+//                     aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+//                   >
+//                     <FaHeart />
+//                   </button>
+//                 </div>
+//               </Link>
+//               <div className="p-4">
+//                 <h3 className="text-xl text-slate-900 font-semibold">
+//                   {highlightMatch(recipe.title, search)}
+//                 </h3>
+//                 <p className="text-sm text-slate-800">
+//                   By {recipe.createdBy?.name || "Unknown"}
+//                 </p>
+//                 <p className="text-slate-800">
+//                   {highlightMatch(recipe.description, search)}
+//                 </p>
+//               </div>
+//             </div>
+//           );
+//         })}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Recipes;
+

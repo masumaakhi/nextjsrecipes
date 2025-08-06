@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req, { params }) {
   await connectDb();
+   const { id } = await params;
   const { userId, text } = await req.json();
 
   try {
@@ -22,6 +23,7 @@ export async function POST(req, { params }) {
 
 export async function GET(req, { params }) {
   await connectDb();
+   const { id } = await params;
 
   try {
     const recipe = await Recipe.findById(params.id);
