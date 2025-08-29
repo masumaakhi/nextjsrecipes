@@ -70,13 +70,14 @@ import connectDb from "@/lib/connectDb";
 import Recipe from "@/models/recipe";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth"; // your NextAuth config
+import User from "@/models/user";
 
 // 🟢 GET method: userReaction সহ রেসিপি info
 export async function GET(req, { params }) {
   await connectDb();
   const session = await getServerSession(authOptions);
- const { id } = params; // 👈 এই লাইনে destructure করো
-const recipeId = id;   // 👈 এখন আর error হবে না
+  const { id } = await params;
+  const recipeId = id;
 
   const userId = session?.user?._id;
 
@@ -117,9 +118,21 @@ export async function PUT(req, { params }) {
   }
 
   const { type } = await req.json(); // expected "like" or "dislike"
-  const { id } = params; // 👈 এই লাইনে destructure করো
-const recipeId = id;
-  const userId = session.user._id;
+  const { id } = await params;
+  const recipeId = id;
+  let userId = session.user?._id;
+  if (!userId) {
+    // Fallback: derive user id by email
+    const email = session.user?.email;
+    if (!email) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+    const u = await User.findOne({ email }).lean();
+    if (!u?._id) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+    userId = u._id.toString();
+  }
 
   try {
     const recipe = await Recipe.findById(recipeId);

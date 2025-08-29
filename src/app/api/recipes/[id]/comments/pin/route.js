@@ -8,14 +8,14 @@ export async function PUT(req, { params }) {
   const { id } = params;
   const { commentId, pinned } = await req.json();
 
-  const recipe = await Recipe.findById(id);
+    const recipe = await Recipe.findById(id);
   if (!recipe) return NextResponse.json({ success: false, message: "Recipe not found" }, { status: 404 });
 
-  const comment = recipe.comments.id(commentId);
+    const comment = recipe.comments.id(commentId);
   if (!comment) return NextResponse.json({ success: false, message: "Comment not found" }, { status: 404 });
 
-  comment.pinned = pinned;
-  await recipe.save();
+    comment.pinned = pinned;
+    await recipe.save();
 
   return NextResponse.json({ success: true, comment });
 }

@@ -9,20 +9,20 @@ export async function PUT(req, { params }) {
   const { id } = params;
   const { commentId, userId, type } = await req.json();
 
-  const recipe = await Recipe.findById(id);
+    const recipe = await Recipe.findById(id);
   if (!recipe) return NextResponse.json({ success: false, message: "Recipe not found" }, { status: 404 });
 
-  const comment = recipe.comments.id(commentId);
+    const comment = recipe.comments.id(commentId);
   if (!comment) return NextResponse.json({ success: false, message: "Comment not found" }, { status: 404 });
 
-  // Remove user from both arrays first
-  comment.likes.pull(userId);
-  comment.dislikes.pull(userId);
+    // Remove user from both arrays first
+    comment.likes.pull(userId);
+    comment.dislikes.pull(userId);
 
   if (type === "like") comment.likes.push(userId);
   if (type === "dislike") comment.dislikes.push(userId);
 
-  await recipe.save();
+    await recipe.save();
 
   return NextResponse.json({ success: true, comment });
 }
