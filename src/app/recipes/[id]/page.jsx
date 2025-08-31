@@ -217,7 +217,12 @@ useEffect(() => {
           <FaThumbsDown className="w-4 h-4" />
           <span className="text-sm font-medium">{formatCount(dislikes)}</span>
         </button>
-        <ShareButtons title={recipe.title} text={recipe.description} />
+              <ShareButtons
+        title={recipe.title}
+        text={`Check this delicious recipe: ${recipe.title}`}
+        url={typeof window !== "undefined" ? window.location.href : undefined}
+        enableEmbed={true} // YouTube হলে embed দেখাবে
+      />
       </div>
 
       <p className="text-slate-800 mb-6">{recipe.description}</p>

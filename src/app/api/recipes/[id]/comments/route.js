@@ -79,40 +79,4 @@ export async function GET(req, { params }) {
   }
 }
 
-// import { NextResponse } from "next/server";
-// import connectDb from "@/lib/connectDb";
-// import Recipe from "@/models/recipe";
 
-// export async function POST(req, { params }) {
-//   await connectDb();
-
-//   try {
-//     const { id } = params;
-//     const body = await req.json();
-//     const { text, userId } = body;
-
-//     if (!text || !userId) {
-//       return NextResponse.json({ success: false, message: "Invalid input" }, { status: 400 });
-//     }
-
-//     const recipe = await Recipe.findById(id);
-//     if (!recipe) {
-//       return NextResponse.json({ success: false, message: "Recipe not found" }, { status: 404 });
-//     }
-
-//     // Add comment
-//     recipe.comments.push({
-//       user: userId,
-//       text,
-//       createdAt: new Date(),
-//       replies: [],
-//     });
-
-//     await recipe.save();
-
-//     return NextResponse.json({ success: true, message: "Comment added!" });
-//   } catch (err) {
-//     console.error(err);
-//     return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
-//   }
-// }
