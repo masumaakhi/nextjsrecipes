@@ -2,16 +2,17 @@
 import Link from "next/link";
 import connectDb from "@/lib/connectDb";
 import Recipe from "@/models/recipe";
+import { unstable_noStore as noStore } from "next/cache"; // ⬅️ add
 
-export const dynamic = "force-dynamic";
-
+// DB থেকে ট্রেন্ডিং ৪টি
 async function getTrendingRecipes() {
+  noStore();                     // ⬅️ এই রেন্ডারে cache না থাক
   await connectDb();
 
   const rows = await Recipe.aggregate([
     { $match: { status: "approved" } },
 
-    // ratings array / likes array নরমালাইজ
+    // normalize
     {
       $addFields: {
         ratingsArr: { $ifNull: ["$ratings", []] },
@@ -19,7 +20,7 @@ async function getTrendingRecipes() {
       },
     },
 
-    // avgRating বের করি
+    // avgRating (string হলে 0)
     {
       $addFields: {
         avgRating: {
@@ -30,7 +31,9 @@ async function getTrendingRecipes() {
                 $map: {
                   input: "$ratingsArr",
                   as: "r",
-                  in: { $toDouble: "$$r.value" },
+                  in: {
+                    $convert: { input: "$$r.value", to: "double", onError: 0, onNull: 0 },
+                  },
                 },
               },
             },
@@ -40,15 +43,14 @@ async function getTrendingRecipes() {
       },
     },
 
-    // ট্রেন্ডিং অর্ডার
+    // trending order
     { $sort: { avgRating: -1, likesCount: -1, createdAt: -1 } },
     { $limit: 4 },
 
-    // UI ফিল্ড
     { $project: { title: 1, imageUrl: 1, avgRating: 1 } },
   ]);
 
-  // স্টার দেখানোর জন্য nearest int
+  // স্টার দেখানোর জন্য round
   return rows.map((r) => ({
     ...r,
     avgRating: Math.max(0, Math.min(5, Math.round(r.avgRating || 0))),
@@ -56,14 +58,13 @@ async function getTrendingRecipes() {
 }
 
 export default async function TrendingRecipes() {
+  noStore(); // ⬅️ সেফ সাইডে কম্পোনেন্টেও
   const recipes = await getTrendingRecipes();
 
   const renderStars = (rating) => (
     <div className="flex gap-1 text-yellow-400 mb-2">
       {Array.from({ length: 5 }).map((_, i) => (
-        <span key={i} className={i < rating ? "text-yellow-400" : "text-gray-300"}>
-          ★
-        </span>
+        <span key={i} className={i < rating ? "text-yellow-400" : "text-gray-300"}>★</span>
       ))}
     </div>
   );
@@ -72,20 +73,14 @@ export default async function TrendingRecipes() {
     <div className="max-w-[86rem] mx-auto px-4 py-10">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-gray-800">Trending Recipes</h2>
-        <Link
-          href="/recipes"
-          className="text-blue-600 no-underline hover:text-blue-800 font-medium transition duration-300"
-        >
+        <Link href="/recipes" className="text-blue-600 no-underline hover:text-blue-800 font-medium transition duration-300">
           See More →
         </Link>
       </div>
 
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {recipes.map((r) => (
-          <div
-            key={String(r._id)}
-            className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
-          >
+          <div key={String(r._id)} className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
             <Link href={`/recipes/${r._id}`} className="block">
               <img
                 src={r.imageUrl}

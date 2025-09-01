@@ -2,79 +2,80 @@
 import Link from "next/link";
 import connectDb from "@/lib/connectDb";
 import Recipe from "@/models/recipe";
-
-export const dynamic = "force-dynamic";
+import { unstable_noStore as noStore } from "next/cache";
 
 const fallbackImg = (name) =>
   `https://source.unsplash.com/featured/800x600?${encodeURIComponent(name)}`;
 
-async function getPopularCategories() {
+// শুধু FOOD TYPE ধরার জন্য আপডেটেড কুয়েরি
+async function getPopularFoodTypes() {
+  noStore();               // ⬅️ ক্যাশিং অফ (কম্পোনেন্ট লেভেল)
   await connectDb();
 
   const rows = await Recipe.aggregate([
-    { $match: { status: "approved" } },
+    { $match: { status: "approved" } }, // চাইলে এটা বাদ দাও
     {
-      $project: {
-        imageUrl: 1,
+      $addFields: {
         likesCount: { $size: { $ifNull: ["$likes", []] } },
-        pairs: {
-          $concatArrays: [
-            { $map: { input: { $ifNull: ["$category.cuisine", []] },   as: "v", in: { name: "$$v", group: "cuisine"   } } },
-            { $map: { input: { $ifNull: ["$category.mealType", []] },  as: "v", in: { name: "$$v", group: "mealType" } } },
-            { $map: { input: { $ifNull: ["$category.dietType", []] },  as: "v", in: { name: "$$v", group: "dietType" } } },
-            { $map: { input: { $ifNull: ["$category.foodType", []] },  as: "v", in: { name: "$$v", group: "foodType" } } },
-          ],
-        },
       },
     },
-    { $unwind: "$pairs" },
-    { $match: { "pairs.name": { $type: "string", $ne: "" } } },
+    // foodType ফ্ল্যাট করা
+    {
+      $unwind: {
+        path: "$category.foodType",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    { $match: { "category.foodType": { $type: "string", $ne: "" } } },
+    // বেশি লাইকড রেসিপি আগে, প্রতিটি foodType-এর প্রথমটাকে নাও
     { $sort: { likesCount: -1 } },
     {
       $group: {
-        _id: "$pairs.name",
-        doc:   { $first: "$$ROOT" },
-        group: { $first: "$pairs.group" },
+        _id: "$category.foodType",
+        imageUrl: { $first: "$imageUrl" },
+        likesCount: { $first: "$likesCount" },
       },
     },
-    { $project: { _id: 0, name: "$_id", group: 1, imageUrl: "$doc.imageUrl", likesCount: "$doc.likesCount" } },
+    { $project: { _id: 0, name: "$_id", imageUrl: 1, likesCount: 1 } },
     { $sort: { likesCount: -1, name: 1 } },
-    { $limit: 6 },
+    { $limit: 6 }, // চাইলে বাড়াও/সরাও
   ]);
 
   return rows.map((r) => ({
     name: String(r.name).trim(),
-    group: r.group,
     imageUrl: r.imageUrl || fallbackImg(r.name),
     likesCount: r.likesCount || 0,
   }));
 }
 
 export default async function CategoryList() {
-  const categoriesWithTopRecipes = await getPopularCategories();
+  const items = await getPopularFoodTypes();
 
   return (
     <div className="max-w-[86rem] mx-auto px-6 py-12">
       <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl font-semibold text-gray-800">Popular Categories</h2>
-        <Link href="/allcategory" className="text-[#681f28] no-underline text-lg hover:text-red-800 transition">
+        <h2 className="text-3xl font-semibold text-gray-800">Popular Food Types</h2>
+        <Link
+          href="/allcategory"
+          className="text-[#681f28] no-underline text-lg hover:text-red-800 transition"
+        >
           View more →
         </Link>
       </div>
 
-      {categoriesWithTopRecipes.length > 0 ? (
+      {items.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-          {categoriesWithTopRecipes.map((item) => (
-            <div key={`${item.group}-${item.name}`} className="text-center">
+          {items.map((item) => (
+            <div key={item.name} className="text-center">
               <Link
-                href={`/category/${encodeURIComponent(item.name)}?group=${encodeURIComponent(item.group)}`}
+                href={`/category/${encodeURIComponent(item.name)}?group=foodType`}
                 className="no-underline"
               >
                 <img
                   src={item.imageUrl}
                   alt={item.name}
-                  className="sm:w-[8rem] sm:h-[8rem] w-[10rem] h-[10rem] object-cover rounded-full mx-auto transition-transform duration-500 hover:scale-105 shadow-md"
                   loading="lazy"
+                  className="sm:w-[8rem] sm:h-[8rem] w-[10rem] h-[10rem] object-cover rounded-full mx-auto transition-transform duration-500 hover:scale-105 shadow-md"
                 />
                 <p className="mt-4 text-xl font-medium text-gray-700 hover:text-[#681f28] transition cursor-pointer capitalize">
                   {item.name}
